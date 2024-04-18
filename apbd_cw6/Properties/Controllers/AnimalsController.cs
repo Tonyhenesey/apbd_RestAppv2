@@ -70,4 +70,23 @@ public class AnimalsController : ControllerBase
         //_repository.AddAnimal(addAnimal);
         return Created();
     }
+
+    [HttpPut]
+    public IActionResult PutAnimal(PutAnimal putAnimal)
+    {
+        using SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("Default"));
+        connection.Open();
+
+        SqlCommand command = new SqlCommand();
+        command.Connection = connection;
+        command.CommandText = "UPDATE Animal SET Description = @description, Category = @category, Area = @area";
+        command.Parameters.AddWithValue("@description", putAnimal.Decsription);
+        command.Parameters.AddWithValue("@category", putAnimal.Category);
+        command.Parameters.AddWithValue("@area", putAnimal.Area );
+
+        command.ExecuteNonQuery();
+        
+        
+        return Created();
+    }
 }
