@@ -88,10 +88,10 @@ public class AnimalsController : ControllerBase
             Area = @area
         WHERE IdAnimal = @idAnimal";
 
-        command.Parameters.AddWithValue("@name", putAnimal.Name ?? (object)DBNull.Value);
-        command.Parameters.AddWithValue("@decsription", putAnimal.Decsription ?? (object)DBNull.Value);
-        command.Parameters.AddWithValue("@category", putAnimal.Category ?? (object)DBNull.Value);
-        command.Parameters.AddWithValue("@area", putAnimal.Area ?? (object)DBNull.Value);
+        command.Parameters.AddWithValue("@name", putAnimal.Name);
+        command.Parameters.AddWithValue("@decsription", putAnimal.Decsription );
+        command.Parameters.AddWithValue("@category", putAnimal.Category );
+        command.Parameters.AddWithValue("@area", putAnimal.Area);
         command.Parameters.AddWithValue("@idAnimal", idAnimal);
 
         try
