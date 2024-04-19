@@ -71,22 +71,55 @@ public class AnimalsController : ControllerBase
         return Created();
     }
 
-    [HttpPut]
-    public IActionResult PutAnimal(PutAnimal putAnimal)
+    [HttpPut("{idAnimal}")]
+    public IActionResult PutAnimal(int idAnimal, PutAnimal putAnimal)
     {
         using SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("Default"));
         connection.Open();
 
         SqlCommand command = new SqlCommand();
         command.Connection = connection;
-        command.CommandText = "UPDATE Animal SET Description = @description, Category = @category, Area = @area";
-        command.Parameters.AddWithValue("@description", putAnimal.Decsription);
-        command.Parameters.AddWithValue("@category", putAnimal.Category);
-        command.Parameters.AddWithValue("@area", putAnimal.Area );
+        command.CommandText = @"
+        UPDATE Animal
+        SET 
+            Name = @name,
+            Decsription = @decsription,
+            Category = @category,
+            Area = @area
+        WHERE IdAnimal = @idAnimal";
+
+        command.Parameters.AddWithValue("@name", putAnimal.Name ?? (object)DBNull.Value);
+        command.Parameters.AddWithValue("@decsription", putAnimal.Decsription ?? (object)DBNull.Value);
+        command.Parameters.AddWithValue("@category", putAnimal.Category ?? (object)DBNull.Value);
+        command.Parameters.AddWithValue("@area", putAnimal.Area ?? (object)DBNull.Value);
+        command.Parameters.AddWithValue("@idAnimal", idAnimal);
+
+        try
+        {
+            command.ExecuteNonQuery();
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "Internal server error: " + ex.Message);
+        }
+    }
+
+    [HttpDelete("{idAnimal}")]
+    public IActionResult DeleteAnimal(int idAnimal)
+    {
+        using SqlConnection connection = new SqlConnection(_configuration.GetConnectionString("Default"));
+        connection.Open();
+
+        SqlCommand command = new SqlCommand();
+        command.Connection = connection;
+        command.CommandText = "DELETE FROM Animal WHERE IdAnimal = @idAnimal";
+        command.Parameters.AddWithValue("@idAnimal", idAnimal);
 
         command.ExecuteNonQuery();
-        
-        
-        return Created();
+
+        return Ok(); 
     }
+
+
 }
